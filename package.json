@@ -1,8 +1,8 @@
 {
-  "name": "nest-basic-hoidanit",
+  "name": "nest-basic",
   "version": "0.0.1",
-  "description": "https://hoidanit.com.vn/",
-  "author": "Hỏi Dân IT",
+  "description": "duylong",
+  "author": "Duy Long",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -22,8 +22,12 @@
   },
   "dependencies": {
     "@nestjs/common": "9.4.0",
+    "@nestjs/config": "2.3.1",
     "@nestjs/core": "9.4.0",
+    "@nestjs/mongoose": "9.2.2",
     "@nestjs/platform-express": "9.4.0",
+    "ejs": "3.1.9",
+    "mongoose": "7.1.0",
     "reflect-metadata": "0.1.13",
     "rxjs": "7.2.0"
   },
