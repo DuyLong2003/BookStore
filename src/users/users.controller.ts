@@ -39,4 +39,17 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }
+
+  //  Thêm 3 endpoint mới giữ đúng style code gốc
+
+  //  Tìm user theo tên hoặc email
+  @Post('search')
+  search(@Body('keyword') keyword: string) {
+    return this.usersService.search(keyword);
+  }
+  //  Lấy thông tin profile chi tiết
+  @Get(':id/profile')
+  getProfile(@Param('id') id: string) {
+    return this.usersService.getProfile(id);
+  }
 }

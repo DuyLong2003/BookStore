@@ -4,7 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import mongoose, { Model } from 'mongoose';
-import { genSaltSync, hashSync } from "bcryptjs";
+import { compareSync, genSaltSync, hashSync } from "bcryptjs";
 
 @Injectable()
 export class UsersService {
@@ -39,6 +39,16 @@ export class UsersService {
     return this.userModel.findOne({ _id: id });
   }
 
+  findOneByUserName(username: string) {
+
+    return this.userModel.findOne({ email: username });
+  }
+
+  isValidPassword(password: string, hash: string) {
+    return compareSync(password, hash);
+
+  }
+
   async update(updateUserDto: UpdateUserDto) {
     return await this.userModel.updateOne({ _id: updateUserDto._id }, { ...updateUserDto })
   }
@@ -47,5 +57,32 @@ export class UsersService {
     if (!mongoose.Types.ObjectId.isValid(id))
       return "Not found user!"
     return this.userModel.deleteOne({ _id: id });
+  }
+
+  // ✅ Thêm 3 service mới tương ứng 3 endpoint
+
+  // 1️⃣ Tìm user theo tên hoặc email
+  async search(keyword: string) {
+    if (!keyword || keyword.trim() === '') return [];
+    return this.userModel.find({
+      $or: [
+        { name: { $regex: keyword, $options: 'i' } },
+        { email: { $regex: keyword, $options: 'i' } },
+      ],
+    }).select('-password');
+  }
+
+  // 2️⃣ Đổi mật khẩu user
+  async changePassword(id: string, password: string) {
+    if (!mongoose.Types.ObjectId.isValid(id)) return 'Not found user!';
+    const newHash = this.getHashPassword(password);
+    await this.userModel.updateOne({ _id: id }, { password: newHash });
+    return 'Password updated successfully';
+  }
+
+  // 3️⃣ Lấy thông tin profile chi tiết
+  async getProfile(id: string) {
+    if (!mongoose.Types.ObjectId.isValid(id)) return 'Not found user!';
+    return this.userModel.findById(id).select('-password');
   }
 }
